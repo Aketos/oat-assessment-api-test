@@ -36,7 +36,7 @@ services:
         arguments:
             - '%default_language%'
             - '%default_language%'
-            - {'oe':'ISO-639-1'}
+            - {'oe':'%output_encoding%'}
 
     App\Service\QuestionService:
         arguments:

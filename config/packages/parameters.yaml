@@ -5,3 +5,4 @@ parameters:
 
 #    Application
     default_language: en
+    output_encoding: ISO-639-1
