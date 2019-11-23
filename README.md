@@ -7,6 +7,7 @@ How to define the file to use (CSV or JSON) for the API:
     - JsonDataProvider
 
 For example:
+
     App\Service\QuestionService:
             arguments:
                 - '@App\Service\Provider\CsvDataProvider'
