@@ -27,9 +27,13 @@ services:
     App\Service\Provider\CsvDataProvider:
         arguments:
             - '%csv_data%'
+        calls:
+            - [setSerializer, ['@jms_serializer.serializer']]
     App\Service\Provider\JsonDataProvider:
         arguments:
             - '%json_data%'
+        calls:
+            - [setSerializer, ['@jms_serializer.serializer']]
 
     # Services
     App\Service\TranslatorService:
@@ -40,5 +44,5 @@ services:
 
     App\Service\QuestionService:
         arguments:
-            - '@App\Service\Provider\CsvDataProvider'
+            - '@App\Service\Provider\JsonDataProvider'
             - '@App\Service\TranslatorService'

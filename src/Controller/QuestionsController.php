@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Question;
+use App\Exception\EntityException;
 use App\Service\QuestionService;
 use App\Traits\SerializerTrait;
 use App\Validator\CreateQuestionRequestValidator;
@@ -60,6 +62,7 @@ class QuestionsController extends AbstractController
      * @param Request $request
      *
      * @return JsonResponse
+     * @throws EntityException
      */
     public function createQuestion(Request $request): JsonResponse
     {
@@ -69,6 +72,31 @@ class QuestionsController extends AbstractController
         if ($error !== []) {
             return new JsonResponse($error['message'], $error['status']);
         }
+
+        $requestValues = array_filter(
+            array_map(
+                static function (string $fieldName) use ($request) {
+                    if ($request->get($fieldName) !== null) {
+                        return $request->get($fieldName);
+                    }
+                },
+                (new CreateQuestionRequestValidator())->getFieldsList()
+            )
+        );
+
+        if ($request->get('createdAt') === null) {
+            $requestValues = array_merge($requestValues, [new \DateTime()]);
+        }
+
+        $this->questionService->insertNewQuestion(
+            new Question(
+                null,
+                array_combine(
+                    (new CreateQuestionRequestValidator())->getFieldsList(),
+                    $requestValues
+                )
+            )
+        );
 
         return new JsonResponse(['Question successfully created!', 200]);
     }

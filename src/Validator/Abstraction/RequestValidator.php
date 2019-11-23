@@ -17,6 +17,11 @@ abstract class RequestValidator
     public const FIELDS_PATTERN_RULES = [];
 
     /**
+     * Defines optionals fields that could have been sent through the request
+     */
+    public const OPTIONALS_FIELDS = [];
+
+    /**
      * @param Request $request
      *
      * @return array
@@ -74,5 +79,16 @@ abstract class RequestValidator
         }
 
         return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getFieldsList(): array
+    {
+        return array_merge(
+            $this::MANDATORY_FIELDS,
+            $this::OPTIONALS_FIELDS
+            );
     }
 }

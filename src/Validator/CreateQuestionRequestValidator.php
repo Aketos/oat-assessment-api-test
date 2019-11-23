@@ -12,4 +12,8 @@ class CreateQuestionRequestValidator extends RequestValidator
         'choice2',
         'choice3'
     ];
+
+    public const OPTIONALS_FIELDS = [
+        'createdAt'
+    ];
 }

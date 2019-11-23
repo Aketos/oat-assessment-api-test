@@ -21,6 +21,18 @@ class QuestionList
     }
 
     /**
+     * @param Question $question
+     *
+     * @return QuestionList
+     */
+    public function addData(Question $question): QuestionList
+    {
+        $this->data[] = $question;
+
+        return $this;
+    }
+
+    /**
      * @param Question[] $data
      *
      * @return QuestionList

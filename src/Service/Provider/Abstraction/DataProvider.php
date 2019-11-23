@@ -4,9 +4,12 @@ namespace App\Service\Provider\Abstraction;
 
 use App\Exception\ProviderException;
 use App\Interfaces\ProviderInterface;
+use App\Traits\SerializerTrait;
 
 abstract class DataProvider implements ProviderInterface
 {
+    use SerializerTrait;
+
     /** @var array */
     protected $dataPaths;
 

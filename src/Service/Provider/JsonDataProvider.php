@@ -5,6 +5,7 @@ namespace App\Service\Provider;
 use App\Entity\Abstraction\StructuredEntity;
 use App\Exception\EntityException;
 use App\Service\Provider\Abstraction\DataProvider;
+use JMS\Serializer\SerializationContext;
 
 class JsonDataProvider extends DataProvider
 {
@@ -25,6 +26,21 @@ class JsonDataProvider extends DataProvider
                 );
             }
         }
+    }
+
+    /**
+     * @param string $className
+     * @param        $data
+     */
+    public function insertAll(string $className, $data)
+    {
+        file_put_contents(
+            $this->dataPaths[$className],
+            $this->getSerializer()->serialize(
+                $data,
+                'json',
+                SerializationContext::create()->setGroups(['public']))
+        );
     }
 
     /**

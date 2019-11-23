@@ -30,20 +30,22 @@ abstract class StructuredEntity
 
     /**
      * @param string $inputDataType
-     * @param array  $row
+     * @param array  $data
      *
      * @throws EntityException
      */
-    public function __construct(string $inputDataType = null, array $row = [])
+    public function __construct(string $inputDataType = null, array $data = [])
     {
         $this->inputDataType = $inputDataType;
 
-        if ($row !== []) {
-            $this->inputData = $row;
+        if ($data !== []) {
+            $this->inputData = $data;
 
             $this->checkIfEntityIsValid();
 
-            $associativeRow = array_combine($this::STRUCTURE[$inputDataType], $row);
+            $associativeRow = $inputDataType !== null
+                ? array_combine($this::STRUCTURE[$inputDataType], $data)
+                : $data;
 
             foreach ($associativeRow as $attribute => $value) {
                 if (!isset($this::CALLBACKS[$attribute])) {
@@ -72,6 +74,10 @@ abstract class StructuredEntity
      */
     private function isStructureValid(): bool
     {
+        if ($this->inputDataType === null) {
+            return true;
+        }
+
         if (count($this::STRUCTURE[$this->inputDataType]) !== count($this->inputData)) {
             throw new EntityException(
                 'Incorrect structure of extracted row: '
@@ -89,6 +95,10 @@ abstract class StructuredEntity
      */
     private function isDataTypeDefined(): bool
     {
+        if ($this->inputDataType === null) {
+            return true;
+        }
+            
         if (!isset($this::STRUCTURE[$this->inputDataType])) {
             throw new EntityException(
                 'Incorrect data type asked to format (' . $this->inputDataType . ')'

@@ -72,10 +72,13 @@ class Question extends StructuredEntity
 
     /**
      * @return \DateTime
+     * @throws \Exception
      */
     public function getCreatedAt(): \DateTime
     {
-        return $this->createdAt;
+        return !($this->createdAt instanceof \DateTime)
+            ? new \DateTime($this->createdAt)
+            : $this->createdAt;
     }
 
     /**
@@ -120,6 +123,7 @@ class Question extends StructuredEntity
     {
         try {
             $dateTime = new \DateTime($date);
+            $this->setCreatedAt($dateTime);
         } catch (\Exception $e) {
             throw new EntityException('Unable to create DateTime from ' . $date . ' date:' . $e->getMessage());
         }

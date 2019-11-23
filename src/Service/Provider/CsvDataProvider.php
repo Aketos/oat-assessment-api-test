@@ -43,6 +43,11 @@ class CsvDataProvider extends DataProvider
         }
     }
 
+    public function insertAll(string $className, $data)
+    {
+        // TODO: Implement insertAll() method.
+    }
+
     /**
      * @return array
      */

@@ -44,6 +44,22 @@ class QuestionService
 
     /**
      * @param Question $question
+     *
+     * @return bool
+     */
+    public function insertNewQuestion(Question $question): bool
+    {
+        $questionList = (new QuestionList())
+            ->setData($this->provider->findAll(Question::class));
+
+        $questionList->addData($question);
+        $this->provider->insertAll(Question::class, $questionList->getData());
+
+        return true;
+    }
+
+    /**
+     * @param Question $question
      * @param string   $lang
      *
      * @return Question
