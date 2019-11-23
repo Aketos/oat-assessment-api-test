@@ -70,7 +70,7 @@ abstract class RequestValidator
     protected function checkPatternRules(Request $request): array
     {
         foreach ($this::FIELDS_PATTERN_RULES as $field => $rule) {
-            if (!preg_match($rule, $request->get($field))) {
+            if ($request->get($field) !== null && !preg_match($rule, $request->get($field))) {
                 return [
                     'status' => 400,
                     'message' => 'Incorrect ' . $field . ' parameter value'
