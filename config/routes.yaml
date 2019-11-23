@@ -1,0 +1,8 @@
+list:
+    path: /questions
+    controller: App\Controller\QuestionsController::listQuestions
+    methods: GET
+create:
+    path: /questions
+    controller: App\Controller\QuestionsController::createQuestion
+    methods: POST
