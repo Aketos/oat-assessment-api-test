@@ -3,6 +3,7 @@
 namespace App\Service\Provider;
 
 use App\Exception\EntityException;
+use App\Exception\ProviderException;
 use App\Service\Provider\Abstraction\DataProvider;
 
 class CsvDataProvider extends DataProvider
@@ -32,9 +33,12 @@ class CsvDataProvider extends DataProvider
      * @return \Generator|null
      * @throws EntityException
      */
-    public function fetchFile(string $className = null, array $options = []): ?\Generator
+    public function fetchFile(string $className, array $options = []): ?\Generator
     {
-        $handle = fopen($this->dataPath, 'rb');
+        //ProviderException
+        $this->checkIfClassDataIsFindable($className);
+
+        $handle = fopen($this->dataPaths[$className], 'rb');
 
         if ($options === []) {
             $options = $this->getDefaultOptions();
@@ -65,6 +69,9 @@ class CsvDataProvider extends DataProvider
         }
     }
 
+    /**
+     * @return array
+     */
     protected function getDefaultOptions(): array
     {
         return [

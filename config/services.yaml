@@ -26,10 +26,10 @@ services:
     # Data Providers
     App\Service\Provider\CsvDataProvider:
         arguments:
-            - '%csv_questions%'
+            - '%csv_data%'
     App\Service\Provider\JsonDataProvider:
         arguments:
-            - '%json_questions%'
+            - '%json_data%'
 
     # Services
     App\Service\TranslatorService:

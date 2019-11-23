@@ -1,7 +1,8 @@
 parameters:
 #    Data
-    csv_questions: ../config/resources/questions.csv
-    json_questions: ../config/resources/questions.json
+    csv_data: {'App\Entity\Question':'../config/resources/questions.csv'}
+    json_data: {'App\Entity\Question':'../config/resources/questions.json'}
+
 
 #    Application
     default_language: en
