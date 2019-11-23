@@ -32,11 +32,13 @@ services:
             - '%json_questions%'
 
     # Services
-    Stichoza\GoogleTranslate\GoogleTranslate:
+    App\Service\TranslatorService:
         arguments:
             - '%default_language%'
+            - '%default_language%'
+            - {'oe':'ISO-639-1'}
 
     App\Service\QuestionService:
         arguments:
             - '@App\Service\Provider\CsvDataProvider'
-            - '@Stichoza\GoogleTranslate\GoogleTranslate'
+            - '@App\Service\TranslatorService'
