@@ -7,17 +7,23 @@ use App\Exception\EntityException;
 abstract class StructuredEntity
 {
     /**
-     * Defines the column structure of the array passed to the entity constructor:
-     * ['CSV' => ['column_name_1', 'column_name_2']]
+     * Defines the column structure of the array passed to the entity constructor
+     * ex: ['CSV' => ['column_name_1', 'column_name_2']]
      */
     protected const STRUCTURE = [];
 
     /**
-     * Defines the functions to apply to attribute value we want to load:
-     * ['column_name_2' => 'callback_name']
+     * Defines the functions to apply to attribute value we want to load
+     * ex: ['column_name_2' => 'callback_name']
      * callback functions have to be defined on entities
      */
     protected const CALLBACKS = [];
+
+    /**
+     * Defines header associated to data types which need it
+     * ex: [self::DATA_FORMAT_CSV => ['column_name_1', 'column_name_2']]
+     */
+    public const HEADER = [];
 
     public const DATA_FORMAT_CSV = 'csv';
     public const DATA_FORMAT_JSON = 'json';

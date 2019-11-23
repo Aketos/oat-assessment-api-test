@@ -52,10 +52,9 @@ class QuestionService
         $questionsList = (new QuestionList())
             ->setData($this->provider->findAll(Question::class));
 
-        $questionsHeader = ['Question text', 'Created At', 'Choice 1', 'Choice 2', 'Choice 3'];
         $questionsList->addData($question);
 
-        $this->provider->insertAll(Question::class, array_merge([$questionsHeader], $questionsList->getData()));
+        $this->provider->insertAll(Question::class, $questionsList->getData());
 
         return true;
     }

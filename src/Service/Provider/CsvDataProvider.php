@@ -48,12 +48,13 @@ class CsvDataProvider extends DataProvider
     {
         $csvPointer = fopen($this->dataPaths[$className], 'wb');
 
+        if ($this->options['header']) {
+            fputcsv($csvPointer, $className::HEADER[StructuredEntity::DATA_FORMAT_CSV]);
+        }
+
+        /** @var EntityToArrayInterface $object */
         foreach ($data as $object) {
-            if ($object instanceof EntityToArrayInterface) {
-                fputcsv($csvPointer, $object->toArray());
-            } else {
-                fputcsv($csvPointer, $object);
-            }
+            fputcsv($csvPointer, $object->toArray());
         }
 
         fclose($csvPointer);

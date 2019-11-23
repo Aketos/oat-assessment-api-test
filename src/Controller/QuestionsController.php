@@ -86,7 +86,7 @@ class QuestionsController extends AbstractController
         );
 
         if ($request->get('createdAt') === null) {
-            $requestValues = array_merge($requestValues, [new \DateTime()]);
+            $requestValues = array_merge($requestValues, [(new \DateTime())->format('Y-m-d H:i:s')]);
         }
 
         $this->questionService->insertNewQuestion(

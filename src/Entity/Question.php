@@ -32,6 +32,10 @@ class Question extends StructuredEntity implements EntityToArrayInterface
         'choices' => 'generateChoices'
     ];
 
+    public const HEADER = [
+        self::DATA_FORMAT_CSV => ['Question text', 'Created At', 'Choice 1', 'Choice 2', 'Choice 3']
+    ];
+
     /** @var string
      * @JMS\Expose()
      * @JMS\Groups({"public"})
