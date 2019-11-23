@@ -52,7 +52,7 @@ class QuestionsController extends AbstractController
 
         return new JsonResponse(
             $this->getSerializer()->serialize(
-                $questionEntitiesList,
+                $questionEntitiesList->getData(),
                 'json',
                 SerializationContext::create()->setGroups(['public']))
         );
@@ -79,6 +79,7 @@ class QuestionsController extends AbstractController
                     if ($request->get($fieldName) !== null) {
                         return $request->get($fieldName);
                     }
+                    return null;
                 },
                 (new CreateQuestionRequestValidator())->getFieldsList()
             )

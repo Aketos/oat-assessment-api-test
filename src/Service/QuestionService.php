@@ -49,11 +49,13 @@ class QuestionService
      */
     public function insertNewQuestion(Question $question): bool
     {
-        $questionList = (new QuestionList())
+        $questionsList = (new QuestionList())
             ->setData($this->provider->findAll(Question::class));
 
-        $questionList->addData($question);
-        $this->provider->insertAll(Question::class, $questionList->getData());
+        $questionsHeader = ['Question text', 'Created At', 'Choice 1', 'Choice 2', 'Choice 3'];
+        $questionsList->addData($question);
+
+        $this->provider->insertAll(Question::class, array_merge([$questionsHeader], $questionsList->getData()));
 
         return true;
     }
