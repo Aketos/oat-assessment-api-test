@@ -19,7 +19,37 @@ abstract class DataProvider implements ProviderInterface
         $this->options = $this->getDefaultOptions();
     }
 
-    abstract public function findAll(string $className, array $options = []): ?array;
+    /**
+     * @param string $className
+     * @param array  $options
+     *
+     * @return array|null
+     * @throws ProviderException
+     */
+    public function findAll(string $className, array $options = []): ?array
+    {
+        $this->checkIfClassDataIsFindable($className);
+
+        $entities = [];
+        $this->options = array_merge($this->getDefaultOptions(), $options);
+
+        foreach ($this->fetchFile($className) as $entity) {
+            $entities[] = $entity;
+        }
+
+        return $entities;
+    }
+
+    /**
+     * @param string|null $className
+     *
+     * @return \Generator|null
+     */
+    abstract protected function fetchFile(string $className = null): ?\Generator;
+
+    /**
+     * @return array
+     */
     abstract protected function getDefaultOptions(): array;
 
     /**

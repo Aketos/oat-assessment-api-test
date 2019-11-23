@@ -9,18 +9,26 @@ use JMS\Serializer\Annotation as JMS;
 class Question extends StructuredEntity
 {
     protected const STRUCTURE = [
-        'text',
-        'createdAt',
-        'choice1',
-        'choice2',
-        'choice3'
+        self::DATA_FORMAT_CSV => [
+            'text',
+            'createdAt',
+            'choice1',
+            'choice2',
+            'choice3'
+        ],
+        self::DATA_FORMAT_JSON => [
+            'text',
+            'createdAt',
+            'choices'
+        ]
     ];
 
     protected const CALLBACKS = [
         'createdAt' => 'createDateTime',
         'choice1' => 'addChoice',
         'choice2' => 'addChoice',
-        'choice3' => 'addChoice'
+        'choice3' => 'addChoice',
+        'choices' => 'generateChoices'
     ];
 
     /** @var string
@@ -108,7 +116,7 @@ class Question extends StructuredEntity
      * @return \DateTime
      * @throws EntityException
      */
-    public function createDateTime(string $date): \DateTime
+    protected function createDateTime(string $date): \DateTime
     {
         try {
             $dateTime = new \DateTime($date);
@@ -124,11 +132,25 @@ class Question extends StructuredEntity
      *
      * @return Question
      */
-    public function addChoice(string $textChoice): Question
+    protected function addChoice(string $textChoice): Question
     {
         $choices = $this->getChoices();
         $choices[] = new Choice($textChoice);
         $this->setChoices($choices);
+
+        return $this;
+    }
+
+    /**
+     * @param array $choices
+     *
+     * @return Question
+     */
+    protected function generateChoices(array $choices): Question
+    {
+        foreach ($choices as $choiceArray) {
+            $this->addChoice($choiceArray['text']);
+        }
 
         return $this;
     }

@@ -8,7 +8,7 @@ abstract class StructuredEntity
 {
     /**
      * Defines the column structure of the array passed to the entity constructor:
-     * ['column_name_1', 'column_name_2']
+     * ['CSV' => ['column_name_1', 'column_name_2']]
      */
     protected const STRUCTURE = [];
 
@@ -19,29 +19,38 @@ abstract class StructuredEntity
      */
     protected const CALLBACKS = [];
 
+    public const DATA_FORMAT_CSV = 'csv';
+    public const DATA_FORMAT_JSON = 'json';
+
     /** @var array */
     private $inputData;
 
+    /** @var string */
+    private $inputDataType;
+
     /**
-     * CsvEntity constructor.
-     *
-     * @param array $row
+     * @param string $inputDataType
+     * @param array  $row
      *
      * @throws EntityException
      */
-    public function __construct(array $row = [])
+    public function __construct(string $inputDataType = null, array $row = [])
     {
+        $this->inputDataType = $inputDataType;
+
         if ($row !== []) {
             $this->inputData = $row;
 
             $this->checkIfEntityIsValid();
 
-            $associativeRow = array_combine($this::STRUCTURE, $row);
+            $associativeRow = array_combine($this::STRUCTURE[$inputDataType], $row);
 
             foreach ($associativeRow as $attribute => $value) {
-                $this->$attribute = isset($this::CALLBACKS[$attribute])
-                    ? $this->{$this::CALLBACKS[$attribute]}($value)
-                    : $value;
+                if (!isset($this::CALLBACKS[$attribute])) {
+                    $this->$attribute = $value;
+                } else {
+                    $this->{$this::CALLBACKS[$attribute]}($value);
+                }
             }
         }
     }
@@ -52,7 +61,9 @@ abstract class StructuredEntity
      */
     private function checkIfEntityIsValid(): bool
     {
-        return $this->isStructureValid() && $this->areCallbacksValid();
+        return $this->isStructureValid()
+            && $this->isDataTypeDefined()
+            && $this->areCallbacksValid();
     }
 
     /**
@@ -61,9 +72,26 @@ abstract class StructuredEntity
      */
     private function isStructureValid(): bool
     {
-        if (count($this::STRUCTURE) !== count($this->inputData)) {
+        if (count($this::STRUCTURE[$this->inputDataType]) !== count($this->inputData)) {
             throw new EntityException(
-                'Incorrect structure of extracted row: ' . count($this->inputData) . '/' . count($this::STRUCTURE) . ' columns'
+                'Incorrect structure of extracted row: '
+                . count($this->inputData) . '/' . count($this::STRUCTURE[$this->inputDataType])
+                . ' columns'
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     * @throws EntityException
+     */
+    private function isDataTypeDefined(): bool
+    {
+        if (!isset($this::STRUCTURE[$this->inputDataType])) {
+            throw new EntityException(
+                'Incorrect data type asked to format (' . $this->inputDataType . ')'
             );
         }
 

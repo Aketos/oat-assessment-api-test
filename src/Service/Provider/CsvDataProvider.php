@@ -2,41 +2,19 @@
 
 namespace App\Service\Provider;
 
+use App\Entity\Abstraction\StructuredEntity;
 use App\Exception\EntityException;
-use App\Exception\ProviderException;
 use App\Service\Provider\Abstraction\DataProvider;
 
 class CsvDataProvider extends DataProvider
 {
     /**
-     * @param string $className
-     * @param array  $options
-     *
-     * @return array|null
-     * @throws EntityException
-     * @throws ProviderException
-     */
-    public function findAll(string $className, array $options = []): ?array
-    {
-        $this->checkIfClassDataIsFindable($className);
-
-        $entities = [];
-        $this->options = array_merge($this->getDefaultOptions(), $options);
-
-        foreach ($this->fetchFile($className) as $entity) {
-            $entities[] = $entity;
-        }
-
-        return $entities;
-    }
-
-    /**
-     * @param string $className
+     * @param string|null $className
      *
      * @return \Generator|null
      * @throws EntityException
      */
-    protected function fetchFile(string $className): ?\Generator
+    protected function fetchFile(string $className = null): ?\Generator
     {
         $handle = fopen($this->dataPaths[$className], 'rb');
 
@@ -49,7 +27,7 @@ class CsvDataProvider extends DataProvider
                 try {
                     if ($data !== false) {
                         if ($header === false) {
-                            yield ($className !== null) ? new $className($data) : $data;
+                            yield ($className !== null) ? new $className(StructuredEntity::DATA_FORMAT_CSV, $data) : $data;
                         } else {
                             $header = false;
                         }

@@ -5,6 +5,7 @@
         "php": "^7.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-json": "*",
         "jms/serializer-bundle": "^3.4",
         "stichoza/google-translate-php": "^4.0",
         "symfony/console": "4.2.*",
