@@ -4,6 +4,7 @@ namespace App\Service\Provider;
 
 use App\Entity\Abstraction\StructuredEntity;
 use App\Exception\EntityException;
+use App\Interfaces\EntityToArrayInterface;
 use App\Service\Provider\Abstraction\DataProvider;
 
 class CsvDataProvider extends DataProvider
@@ -43,9 +44,16 @@ class CsvDataProvider extends DataProvider
         }
     }
 
-    public function insertAll(string $className, $data)
+    public function insertAll(string $className, $data): void
     {
-        // TODO: Implement insertAll() method.
+        $csvPointer = fopen($this->dataPaths[$className], 'wb');
+
+        /** @var EntityToArrayInterface $object */
+        foreach ($data as $object) {
+            fputcsv($csvPointer, $object->toArray());
+        }
+
+        fclose($csvPointer);
     }
 
     /**

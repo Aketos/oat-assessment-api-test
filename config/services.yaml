@@ -44,5 +44,5 @@ services:
 
     App\Service\QuestionService:
         arguments:
-            - '@App\Service\Provider\JsonDataProvider'
+            - '@App\Service\Provider\CsvDataProvider'
             - '@App\Service\TranslatorService'

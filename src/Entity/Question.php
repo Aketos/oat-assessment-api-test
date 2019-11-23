@@ -4,9 +4,10 @@ namespace App\Entity;
 
 use App\Entity\Abstraction\StructuredEntity;
 use App\Exception\EntityException;
+use App\Interfaces\EntityToArrayInterface;
 use JMS\Serializer\Annotation as JMS;
 
-class Question extends StructuredEntity
+class Question extends StructuredEntity implements EntityToArrayInterface
 {
     protected const STRUCTURE = [
         self::DATA_FORMAT_CSV => [
@@ -157,5 +158,27 @@ class Question extends StructuredEntity
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function toArray(): array
+    {
+        $choices = array_map(
+            static function (Choice $choice) {
+                return $choice->getText();
+            },
+            $this->getChoices()
+        );
+
+        return [
+            'text' => $this->getText(),
+            'createdAt' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'choice1' => $choices[0],
+            'choice2' => $choices[1],
+            'choice3' => $choices[2]
+        ];
     }
 }

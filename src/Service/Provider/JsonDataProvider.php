@@ -32,7 +32,7 @@ class JsonDataProvider extends DataProvider
      * @param string $className
      * @param        $data
      */
-    public function insertAll(string $className, $data)
+    public function insertAll(string $className, $data): void
     {
         file_put_contents(
             $this->dataPaths[$className],
