@@ -12,7 +12,7 @@ How to test the API:
         - update php.ini file with the certificate
             > curl.cainfo = "Path\to\php\php<version>\extras\ssl\cacert.pem"
         - start local server
-            > php -S localhost:1988 -t public 
+            > php -S 127.0.0.1:1988 -t public 
         
     Execution:
     (use Postman for more facilities, but can be done with curl)
