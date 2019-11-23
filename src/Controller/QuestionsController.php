@@ -25,6 +25,7 @@ class QuestionsController extends AbstractController
      * @param Request $request
      *
      * @return JsonResponse
+     * @throws \Exception
      */
     public function listQuestions(Request $request): JsonResponse
     {
@@ -34,7 +35,15 @@ class QuestionsController extends AbstractController
             return new JsonResponse($error['message'], $error['status']);
         }
 
-        $questionEntitiesList = $this->questionService->listQuestionsInLanguage($request->get('lang'));
+        try {
+            $questionEntitiesList = $this->questionService->listQuestionsInLanguage($request->get('lang'));
+        } catch (\Exception $e) {
+            if ($this->getParameter('kernel.environment') !== 'prod') {
+                throw $e;
+            }
+
+            return new JsonResponse('A technical error occurred', 500);
+        }
 
         return new JsonResponse(
             $this->getSerializer()->serialize(
