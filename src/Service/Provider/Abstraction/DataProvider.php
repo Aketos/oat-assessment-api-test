@@ -7,14 +7,20 @@ use App\Interfaces\ProviderInterface;
 
 abstract class DataProvider implements ProviderInterface
 {
+    /** @var array */
     protected $dataPaths;
+
+    /** @var array */
+    protected $options;
 
     public function __construct(array $dataPaths)
     {
         $this->dataPaths = $dataPaths;
+        $this->options = $this->getDefaultOptions();
     }
 
     abstract public function findAll(string $className, array $options = []): ?array;
+    abstract protected function getDefaultOptions(): array;
 
     /**
      * @param string $className

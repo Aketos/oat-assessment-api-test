@@ -14,12 +14,16 @@ class CsvDataProvider extends DataProvider
      *
      * @return array|null
      * @throws EntityException
+     * @throws ProviderException
      */
     public function findAll(string $className, array $options = []): ?array
     {
-        $entities = [];
+        $this->checkIfClassDataIsFindable($className);
 
-        foreach ($this->fetchFile($className, $options) as $entity) {
+        $entities = [];
+        $this->options = array_merge($this->getDefaultOptions(), $options);
+
+        foreach ($this->fetchFile($className) as $entity) {
             $entities[] = $entity;
         }
 
@@ -27,28 +31,20 @@ class CsvDataProvider extends DataProvider
     }
 
     /**
-     * @param string|null $className
-     * @param array       $options
+     * @param string $className
      *
      * @return \Generator|null
      * @throws EntityException
      */
-    public function fetchFile(string $className, array $options = []): ?\Generator
+    protected function fetchFile(string $className): ?\Generator
     {
-        //ProviderException
-        $this->checkIfClassDataIsFindable($className);
-
         $handle = fopen($this->dataPaths[$className], 'rb');
 
-        if ($options === []) {
-            $options = $this->getDefaultOptions();
-        }
-
-        $header = $options['header'];
+        $header = $this->options['header'];
 
         if ($handle !== false) {
             do {
-                $data = fgetcsv($handle, 5000, $options['separator']);
+                $data = fgetcsv($handle, 5000, $this->options['separator']);
 
                 try {
                     if ($data !== false) {
