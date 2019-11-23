@@ -46,18 +46,29 @@ class CsvDataProvider extends DataProvider
 
     public function insertAll(string $className, $data): void
     {
-        $csvPointer = fopen($this->dataPaths[$className], 'wb');
+        $backup = file_get_contents($this->dataPaths[$className]);
 
-        if (defined($className . '::HEADER') && $this->options['header']) {
-            fputcsv($csvPointer, $className::HEADER[StructuredEntity::DATA_FORMAT_CSV]);
+        try {
+            $csvPointer = fopen($this->dataPaths[$className], 'wb');
+
+            if (defined($className . '::HEADER') && $this->options['header']) {
+                fputcsv($csvPointer, $className::HEADER[StructuredEntity::DATA_FORMAT_CSV]);
+            }
+
+            /** @var EntityToArrayInterface $object */
+            foreach ($data as $object) {
+                fputcsv($csvPointer, $object->toArray());
+            }
+
+            fclose($csvPointer);
+        } catch (\Exception $e) {
+            file_put_contents(
+                $this->dataPaths[$className],
+                $backup
+            );
+
+            throw $e;
         }
-
-        /** @var EntityToArrayInterface $object */
-        foreach ($data as $object) {
-            fputcsv($csvPointer, $object->toArray());
-        }
-
-        fclose($csvPointer);
     }
 
     /**
