@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Service\QuestionService;
 use App\Traits\SerializerTrait;
+use App\Validator\CreateQuestionRequestValidator;
+use App\Validator\ListQuestionsRequestValidator;
 use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +31,8 @@ class QuestionsController extends AbstractController
      */
     public function listQuestions(Request $request): JsonResponse
     {
-        $error = $this->checkIfErrorInRequest($request);
+        $error = (new ListQuestionsRequestValidator())
+            ->checkIfRequestIsValid($request);
 
         if ($error !== []) {
             return new JsonResponse($error['message'], $error['status']);
@@ -56,24 +59,17 @@ class QuestionsController extends AbstractController
     /**
      * @param Request $request
      *
-     * @return array
+     * @return JsonResponse
      */
-    protected function checkIfErrorInRequest(Request $request): array
+    public function createQuestion(Request $request): JsonResponse
     {
-        if ($request->get('lang') === null) {
-            return [
-                'status' => 400,
-                'message' => 'Parameter lang is missing from request'
-            ];
+        $error = (new CreateQuestionRequestValidator())
+            ->checkIfRequestIsValid($request);
+
+        if ($error !== []) {
+            return new JsonResponse($error['message'], $error['status']);
         }
 
-        if (!preg_match('/^([a-z]{2})(-[A-Z]{2})?$/', $request->get('lang'))) {
-            return [
-                'status' => 400,
-                'message' => 'Incorrect lang parameter value'
-            ];
-        }
-
-        return [];
+        return new JsonResponse(['Question successfully created!', 200]);
     }
 }
