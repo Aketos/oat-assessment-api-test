@@ -48,7 +48,7 @@ class CsvDataProvider extends DataProvider
     {
         $csvPointer = fopen($this->dataPaths[$className], 'wb');
 
-        if ($this->options['header']) {
+        if (defined($className . '::HEADER') && $this->options['header']) {
             fputcsv($csvPointer, $className::HEADER[StructuredEntity::DATA_FORMAT_CSV]);
         }
 
